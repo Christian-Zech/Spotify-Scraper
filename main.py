@@ -45,6 +45,7 @@ def get_token():
     uri_present = EC.url_contains(redirectUri)
     WebDriverWait(driver, 9999).until(uri_present)
     authorization_code = urllib.parse.urlparse(driver.current_url).query.split('=')[1]
+    driver.quit()
     print("Logging in...")
     
     #webbrowser.open(authorization_url, new=1, autoraise=True)
@@ -66,12 +67,17 @@ def get_token():
     return token
 
 def get_playlist(token, id):
-    return requests.get("https://api.spotify.com/v1/playlists/" + id, headers={"Authorization": "Bearer " + token}).json()
+    return requests.get("https://api.spotify.com/v1/playlists/" + id + "/tracks", headers={"Authorization": "Bearer " + token}).json()
 
 
 def main():
     token = get_token()
-    print(get_playlist(token, "4kROaFuLfVxaYSZT3WbJzw"))
+    # input("Enter playlist url: ")
+    id = "https://open.spotify.com/playlist/4kROaFuLfVxaYSZT3WbJzw".split('/')[-1].split('?')[0]
+    track_objects = get_playlist(token, id)["items"]
+    tracks = [track_objects[i]["track"]["name"] for i in range(len(track_objects))]
+    
+    print(tracks)
     
     
 
