@@ -12,6 +12,8 @@ redirectUri = 'http://localhost:8080'
 
 authUrl = "https://accounts.spotify.com/authorize"
 
+
+
 def generate_random_string(length):
     return ''.join(random.choice(string.ascii_letters + string.digits) for i in range(length))
 
@@ -37,8 +39,8 @@ def get_token():
     }
     
     authorization_url = "https://accounts.spotify.com/authorize?" + urllib.parse.urlencode(params)
-    print(f"Please go to the following URL to authorize the app: {authorization_url}")
-
+    webbrowser.open(authorization_url, new=1, autoraise=True)
+    
     
     
     authorization_code = input("Enter the authorization code: ")
