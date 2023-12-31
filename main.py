@@ -8,15 +8,18 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from google.oauth2.service_account import Credentials
+from googleapiclient.discovery import build
 
 spotify_client_id = "85c374790a0d4f119b2ade28c37931e0"
 spotify_redirectUri = 'http://localhost:8080'
 spotify_authUrl = "https://accounts.spotify.com/authorize"
 
-youtube_key = "AIzaSyDEC6EKIdE-03qbBZlrH_7fkmURvDBocQQ"
+youtube_client_key = "AIzaSyDEC6EKIdE-03qbBZlrH_7fkmURvDBocQQ"
 youtube_client_auth= "136009703112-907m04u5ptovfo9qoqgfuta8okfcc0kh.apps.googleusercontent.com"
-driver = webdriver.Chrome()
+youtube_client_secret = "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"
 
+driver = webdriver.Chrome()
 
 def generate_random_string(length):
     return ''.join(random.choice(string.ascii_letters + string.digits) for i in range(length))
@@ -27,7 +30,6 @@ def sha256_hash(string):
 def base64_encode(hash):
     base64_encoded = base64.urlsafe_b64encode(hash)
     return base64_encoded.decode().replace('=', '')
-
 
 def get_spotify_token():
     code_verifier = generate_random_string(64)
@@ -90,20 +92,18 @@ def get_youtube_id(song_name):
         "part": "snippet",
         "maxResults": 1,
         "q": song_name,
-        "key": youtube_key,
+        "key": youtube_client_key,
         "type": "video"
     }
     r = requests.get(base, params=params)
     video_id = r.json()["items"][0]["id"]["videoId"]
-    print(f"Found video id: {video_id}")
+    print(f"found youtube video id: {video_id}")
     return video_id
-
 
 def main():
     track_names = get_tracks()
     for name in track_names:
         get_youtube_id(name)
-    
     
     
 
