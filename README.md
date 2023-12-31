@@ -1,5 +1,5 @@
 # Spotify-Scraper
 
-<h1>**Dependencies**</h1>
+<h1><b>Dependencies</b></h1>
 Please run: 
-**pip install --upgrade requests google-api-python-client google-auth-oauthlib google-auth-httplib2**
+<b>pip install --upgrade requests google-api-python-client google-auth-oauthlib google-auth-httplib2</b>
