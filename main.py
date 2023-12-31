@@ -71,8 +71,7 @@ def get_spotify_token():
 def get_playlist(token, id):
     return requests.get("https://api.spotify.com/v1/playlists/" + id + "/tracks", headers={"Authorization": "Bearer " + token}).json()
 
-
-def main():
+def get_tracks():
     token = get_spotify_token()
     # input("Enter playlist url: ")
     id = "https://open.spotify.com/playlist/4kROaFuLfVxaYSZT3WbJzw".split('/')[-1].split('?')[0]
@@ -83,8 +82,29 @@ def main():
     for track in tracks:
         print(track)
     
+    return tracks
+
+def get_youtube_id(song_name):
+    base = "https://www.googleapis.com/youtube/v3/search"
+    params = {
+        "part": "snippet",
+        "maxResults": 1,
+        "q": song_name,
+        "key": youtube_key,
+        "type": "video"
+    }
+    r = requests.get(base, params=params)
+    video_id = r.json()["items"][0]["id"]["videoId"]
+    print(f"Found video id: {video_id}")
+    return video_id
+
+
+def main():
+    track_names = get_tracks()
+    for name in track_names:
+        get_youtube_id(name)
     
-    print("Searching youtube...")
+    
     
 
 
