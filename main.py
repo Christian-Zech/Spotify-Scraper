@@ -22,10 +22,11 @@ youtube_redirect_uri = "http://localhost:8080"
 
 username = os.getlogin()
 options = webdriver.ChromeOptions() 
-options.add_argument('--profile-directory=Profile 1')
+options.add_argument('--profile-directory=Default')
 options.add_argument(f"user-data-dir=C:\\Users\\{username}\\AppData\\Local\\Google\\Chrome\\User Data")
 driver = webdriver.Chrome(options=options)
 
+# following four functions authenticate the user with spotify's api
 def generate_random_string(length):
     return ''.join(random.choice(string.ascii_letters + string.digits) for i in range(length))
 
@@ -49,6 +50,7 @@ def get_spotify_token():
         "redirect_uri": spotify_redirectUri,
     }
     
+    # opens a chrome window to authenticate the user
     authorization_url = "https://accounts.spotify.com/authorize?" + urllib.parse.urlencode(params)
     driver.get(authorization_url)
     uri_present = EC.url_contains(spotify_redirectUri)
@@ -72,12 +74,13 @@ def get_spotify_token():
     token = response.json()['access_token']
     return token
 
+# Uses spotify's api to get the tracks from the playlist
 def get_playlist(token, id):
     return requests.get("https://api.spotify.com/v1/playlists/" + id + "/tracks", headers={"Authorization": "Bearer " + token}).json()
 
 def get_tracks():
     token = get_spotify_token()
-    id = input("Enter spotify playlist url").split('/')[-1].split('?')[0]
+    id = input("Enter spotify playlist url: ").split('/')[-1].split('?')[0]
     track_objects = get_playlist(token, id)["items"]
     tracks = [track_objects[i]["track"]["name"] for i in range(len(track_objects))]
     
@@ -86,6 +89,7 @@ def get_tracks():
     
     return tracks
 
+# Uses youtube's api to get the video id of a given spotify song name
 def get_youtube_id(song_name):
     base = "https://www.googleapis.com/youtube/v3/search"
     params = {
@@ -101,13 +105,14 @@ def get_youtube_id(song_name):
 
 
 def main():
-    print("loading tracks from spotify...")
+    print("Make sure that chrome is completely closed. This program won't work if chrome is already open.")
     track_names = get_tracks()
-    print("Creating playlist...")
+    print("loading tracks from spotify...")
     flow = InstalledAppFlow.from_client_secrets_file("client_secrets.json", scopes=['https://www.googleapis.com/auth/youtube'])
     flow.run_local_server(port=8080, prompt='consent', authorization_prompt_message="")
     credentials = flow.credentials
     youtube = build('youtube', 'v3', credentials=credentials)
+    print("Creating youtube playlist...")
     playlist = youtube.playlists().insert(
         part="snippet,status",
         body={
