@@ -13,11 +13,11 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 import os
 
 
-spotify_client_id = "85c374790a0d4f119b2ade28c37931e0"
+spotify_client_id = "CLIENT_ID"
 spotify_redirectUri = 'http://localhost:8080'
 spotify_authUrl = "https://accounts.spotify.com/authorize"
 
-youtube_api_key = "AIzaSyDEC6EKIdE-03qbBZlrH_7fkmURvDBocQQ"
+youtube_api_key = "API_KEY"
 youtube_redirect_uri = "http://localhost:8080"
 
 username = os.getlogin()
