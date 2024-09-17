@@ -26,17 +26,20 @@ options.add_argument('--profile-directory=Default')
 options.add_argument(f"user-data-dir=C:\\Users\\{username}\\AppData\\Local\\Google\\Chrome\\User Data")
 driver = webdriver.Chrome(options=options)
 
-# following four functions authenticate the user with spotify's api
+# Helper function for authentication with Spotify
 def generate_random_string(length):
     return ''.join(random.choice(string.ascii_letters + string.digits) for i in range(length))
-
+    
+# Helper function for authentication with Spotify
 def sha256_hash(string):
     return hashlib.sha256(string.encode('utf-8')).digest()
 
+# Helper function for authentication with Spotify 
 def base64_encode(hash):
     base64_encoded = base64.urlsafe_b64encode(hash)
     return base64_encoded.decode().replace('=', '')
-
+    
+# This function authenticates with spotify to get a session token
 def get_spotify_token():
     code_verifier = generate_random_string(64)
     hashed = sha256_hash(code_verifier)
@@ -78,6 +81,7 @@ def get_spotify_token():
 def get_playlist(token, id):
     return requests.get("https://api.spotify.com/v1/playlists/" + id + "/tracks", headers={"Authorization": "Bearer " + token}).json()
 
+# This function returns the tracks it finds with a given spotify token
 def get_tracks():
     token = get_spotify_token()
     id = input("Enter spotify playlist url: ").split('/')[-1].split('?')[0]
